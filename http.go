@@ -3,7 +3,9 @@ package wechat
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"strings"
@@ -28,6 +30,49 @@ func Post(url, contentType string, args map[string]string) (result string, err e
 		return
 	}
 	result = string(body)
+	return
+}
+
+// VideoDescription 视频描述
+type VideoDescription struct {
+	Title        string `json:"title"`        // 视频素材的标题
+	Introduction string `json:"introduction"` // 视频素材的描述
+}
+
+// Upload send post request.
+func Upload(uri, filename string, description *VideoDescription, srcFile io.Reader) (result []byte, err error) {
+	buf := new(bytes.Buffer)
+	// 文件
+	writer := multipart.NewWriter(buf)
+	formFile, err := writer.CreateFormFile("media", filename)
+	if err != nil {
+		return nil, err
+	}
+	if _, err = io.Copy(formFile, srcFile); err != nil {
+		return nil, err
+	}
+	contentType := writer.FormDataContentType()
+	// 附加参数
+	if description != nil {
+		jsonBytes, _ := json.Marshal(description)
+		writer.WriteField("description", string(jsonBytes))
+	}
+	writer.Close() // 发送之前必须调用Close()以写入结尾行
+
+	resp, err := http.Post(uri, contentType, buf)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+	err = NewError(body)
+	if err != nil {
+		return
+	}
+	result = body
 	return
 }
 
