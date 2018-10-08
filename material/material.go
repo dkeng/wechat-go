@@ -31,7 +31,7 @@ func (m *Material) AddNews(req *NewsRequest) (*NewsReply, error) {
 		return nil, err
 	}
 	reply := new(NewsReply)
-	json.Unmarshal([]byte(result), reply)
+	json.Unmarshal(result, reply)
 	return reply, nil
 }
 

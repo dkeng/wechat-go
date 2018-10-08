@@ -77,7 +77,7 @@ func Upload(uri, filename string, description *VideoDescription, srcFile io.Read
 }
 
 // PostJSON send post request.
-func PostJSON(url string, jsonObject interface{}) (result string, err error) {
+func PostJSON(url string, jsonObject interface{}) (result []byte, err error) {
 	json, err := json.Marshal(jsonObject)
 	if err != nil {
 		return
@@ -95,7 +95,7 @@ func PostJSON(url string, jsonObject interface{}) (result string, err error) {
 	if err != nil {
 		return
 	}
-	result = string(body)
+	result = body
 	return
 }
 
