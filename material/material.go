@@ -3,9 +3,10 @@ package material
 import (
 	"encoding/json"
 	"errors"
+	"io"
+
 	"github.com/dkeng/wechat-go"
 	"github.com/dkeng/wechat-go/context"
-	"io"
 )
 
 // Material 素材
@@ -21,11 +22,9 @@ func NewMaterial(c *context.Context) *Material {
 }
 
 // AddNews 新增永久图文素材
-func (m *Material) AddNews(req *NewsRequest) (*NewsReply, error) {
+func (m *Material) AddNews(reqs []*NewsRequest) (*NewsReply, error) {
 	result, err := wechat.PostJSON("https://api.weixin.qq.com/cgi-bin/material/add_news?access_token="+m.context.GetAccessToken(), map[string]interface{}{
-		"articles": [1]*NewsRequest{
-			req,
-		},
+		"articles": reqs,
 	})
 	if err != nil {
 		return nil, err
