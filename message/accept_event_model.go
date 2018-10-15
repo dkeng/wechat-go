@@ -13,6 +13,10 @@ const (
 	FollowEventSubscribe = "subscribe"
 	// FollowEventUnsubscribe unsubscribe(取消订阅)
 	FollowEventUnsubscribe = "unsubscribe"
+	// MenuEventClick 点击菜单拉取消息时的事件推送
+	MenuEventClick = "CLICK"
+	// MenuEventView 点击菜单跳转链接时的事件推送
+	MenuEventView = "VIEW"
 )
 
 // FollowAccept 关注事件
@@ -46,6 +50,15 @@ type ScanQRCodeFollowAccept struct {
 	Ticket       wechat.CDATA `xml:"Ticket"`       // 二维码的ticket，可用来换取二维码图片
 }
 
+// ScanQRCodeFollowAcceptParse ...
+func ScanQRCodeFollowAcceptParse(xmlValue []byte) *ScanQRCodeFollowAccept {
+	msg := &ScanQRCodeFollowAccept{}
+	if err := xml.Unmarshal(xmlValue, msg); err != nil {
+		return nil
+	}
+	return msg
+}
+
 // ScanQRCodeFollowedAccept 二维码事件,用户已关注时的事件推送
 type ScanQRCodeFollowedAccept struct {
 	XMLName      xml.Name     `xml:"xml"`
@@ -56,6 +69,15 @@ type ScanQRCodeFollowedAccept struct {
 	Event        wechat.CDATA `xml:"Event"`        // 事件类型，SCAN
 	EventKey     wechat.CDATA `xml:"EventKey"`     // 事件KEY值，是一个32位无符号整数，即创建二维码时的二维码scene_id
 	Ticket       wechat.CDATA `xml:"Ticket"`       // 二维码的ticket，可用来换取二维码图片
+}
+
+// ScanQRCodeFollowedAcceptParse ...
+func ScanQRCodeFollowedAcceptParse(xmlValue []byte) *ScanQRCodeFollowedAccept {
+	msg := &ScanQRCodeFollowedAccept{}
+	if err := xml.Unmarshal(xmlValue, msg); err != nil {
+		return nil
+	}
+	return msg
 }
 
 // // LocationAccept 上报地理位置事件
@@ -84,6 +106,15 @@ type MenuPullAccept struct {
 	EventKey     wechat.CDATA `xml:"EventKey"`     // 事件KEY值，与自定义菜单接口中KEY值对应
 }
 
+// MenuPullAcceptParse ...
+func MenuPullAcceptParse(xmlValue []byte) *MenuPullAccept {
+	msg := &MenuPullAccept{}
+	if err := xml.Unmarshal(xmlValue, msg); err != nil {
+		return nil
+	}
+	return msg
+}
+
 // MenuSkipAccept 点击菜单跳转链接时的事件推送
 type MenuSkipAccept struct {
 	XMLName      xml.Name     `xml:"xml"`
@@ -93,4 +124,13 @@ type MenuSkipAccept struct {
 	MsgType      wechat.CDATA `xml:"MsgType"`      // 消息类型，event
 	Event        wechat.CDATA `xml:"Event"`        // 事件类型，VIEW
 	EventKey     wechat.CDATA `xml:"EventKey"`     // 事件KEY值，设置的跳转URL
+}
+
+// MenuSkipAcceptParse ...
+func MenuSkipAcceptParse(xmlValue []byte) *MenuSkipAccept {
+	msg := &MenuSkipAccept{}
+	if err := xml.Unmarshal(xmlValue, msg); err != nil {
+		return nil
+	}
+	return msg
 }
