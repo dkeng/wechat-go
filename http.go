@@ -78,11 +78,14 @@ func Upload(uri, filename string, description *VideoDescription, srcFile io.Read
 
 // PostJSON send post request.
 func PostJSON(url string, jsonObject interface{}) (result []byte, err error) {
-	json, err := json.Marshal(jsonObject)
+	buf := new(bytes.Buffer)
+	hjson := json.NewEncoder(buf)
+	hjson.SetEscapeHTML(false)
+	err = hjson.Encode(jsonObject)
 	if err != nil {
 		return
 	}
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer(json))
+	resp, err := http.Post(url, "application/json", buf)
 	if err != nil {
 		return
 	}
