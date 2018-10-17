@@ -36,11 +36,11 @@ func NewTextReply() *TextReply {
 // ImageReply 图片消息
 type ImageReply struct {
 	XMLName      xml.Name     `xml:"xml"`
-	ToUserName   wechat.CDATA `xml:"ToUserName"`   // 接收方帐号（收到的OpenID）
-	FromUserName wechat.CDATA `xml:"FromUserName"` // 开发者微信号
-	CreateTime   int64        `xml:"CreateTime"`   // 消息创建时间 （整型）
-	MsgType      wechat.CDATA `xml:"MsgType"`      // image
-	MediaID      wechat.CDATA `xml:"MediaId"`      // 通过素材管理中的接口上传多媒体文件，得到的id。
+	ToUserName   wechat.CDATA `xml:"ToUserName"`    // 接收方帐号（收到的OpenID）
+	FromUserName wechat.CDATA `xml:"FromUserName"`  // 开发者微信号
+	CreateTime   int64        `xml:"CreateTime"`    // 消息创建时间 （整型）
+	MsgType      wechat.CDATA `xml:"MsgType"`       // image
+	MediaID      wechat.CDATA `xml:"Image>MediaId"` // 通过素材管理中的接口上传多媒体文件，得到的id。
 }
 
 // XML ...
@@ -60,11 +60,11 @@ func NewImageReply() *ImageReply {
 // VoiceReply 语音消息
 type VoiceReply struct {
 	XMLName      xml.Name     `xml:"xml"`
-	ToUserName   wechat.CDATA `xml:"ToUserName"`   // 接收方帐号（收到的OpenID）
-	FromUserName wechat.CDATA `xml:"FromUserName"` // 开发者微信号
-	CreateTime   int64        `xml:"CreateTime"`   // 消息创建时间 （整型）
-	MsgType      wechat.CDATA `xml:"MsgType"`      // 语音，voice
-	MediaID      wechat.CDATA `xml:"MediaId"`      // 通过素材管理中的接口上传多媒体文件，得到的id
+	ToUserName   wechat.CDATA `xml:"ToUserName"`    // 接收方帐号（收到的OpenID）
+	FromUserName wechat.CDATA `xml:"FromUserName"`  // 开发者微信号
+	CreateTime   int64        `xml:"CreateTime"`    // 消息创建时间 （整型）
+	MsgType      wechat.CDATA `xml:"MsgType"`       // 语音，voice
+	MediaID      wechat.CDATA `xml:"Voice>MediaId"` // 通过素材管理中的接口上传多媒体文件，得到的id
 }
 
 // XML ...
@@ -84,13 +84,13 @@ func NewVoiceReply() *VoiceReply {
 // VideoReply 视频消息
 type VideoReply struct {
 	XMLName      xml.Name     `xml:"xml"`
-	ToUserName   wechat.CDATA `xml:"ToUserName"`   // 接收方帐号（收到的OpenID）
-	FromUserName wechat.CDATA `xml:"FromUserName"` // 开发者微信号
-	CreateTime   int64        `xml:"CreateTime"`   // 消息创建时间 （整型）
-	MsgType      wechat.CDATA `xml:"MsgType"`      // video
-	MediaID      wechat.CDATA `xml:"MediaId"`      // 通过素材管理中的接口上传多媒体文件，得到的id
-	Title        wechat.CDATA `xml:"Title"`        // 视频消息的标题
-	Description  wechat.CDATA `xml:"Description"`  // 视频消息的描述
+	ToUserName   wechat.CDATA `xml:"ToUserName"`    // 接收方帐号（收到的OpenID）
+	FromUserName wechat.CDATA `xml:"FromUserName"`  // 开发者微信号
+	CreateTime   int64        `xml:"CreateTime"`    // 消息创建时间 （整型）
+	MsgType      wechat.CDATA `xml:"MsgType"`       // video
+	MediaID      wechat.CDATA `xml:"Video>MediaId"` // 通过素材管理中的接口上传多媒体文件，得到的id
+	Title        wechat.CDATA `xml:"Title"`         // 视频消息的标题
+	Description  wechat.CDATA `xml:"Description"`   // 视频消息的描述
 }
 
 // XML ...
