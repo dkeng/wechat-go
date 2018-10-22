@@ -14,6 +14,7 @@ type Context struct {
 	AppID       string
 	AppSecret   string
 	accessToken string
+	jsAPITicket string
 	ticker      *time.Ticker
 	rwMutex     *sync.RWMutex // 读写锁
 }
@@ -23,6 +24,7 @@ func (c *Context) startTicker() {
 	go func() { // 异步
 		for range c.ticker.C {
 			c.refreshAccessToken() // 刷新AccessToken
+			c.refreshJsAPITicket()
 		}
 	}()
 }
@@ -36,6 +38,7 @@ func NewContext(appID, appSecret string) *Context {
 		rwMutex:   &sync.RWMutex{},
 	}
 	context.refreshAccessToken() // 刷新AccessToken
+	context.refreshJsAPITicket()
 	context.startTicker()
 	return context
 }
@@ -71,4 +74,36 @@ func (c *Context) refreshAccessToken() {
 	c.rwMutex.Lock()
 	defer c.rwMutex.Unlock()
 	c.accessToken = reply.AccessToken
+}
+
+// jsapiTicketReply ...
+type jsapiTicketReply struct {
+	Ticket    string `json:"ticket"`
+	ExpiresIn int    `json:"expires_in"`
+}
+
+// GetJsAPITicket 获取 js api ticket
+func (c *Context) GetJsAPITicket() string {
+	c.rwMutex.RLock()
+	defer c.rwMutex.RUnlock()
+	return c.jsAPITicket
+}
+
+// refreshJsAPITicket ...
+// https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115
+func (c *Context) refreshJsAPITicket() {
+	result, err := wechat.Get("https://api.weixin.qq.com/cgi-bin/ticket/getticket", map[string]string{
+		"access_token": c.GetAccessToken(),
+		"type":         "jsapi",
+	})
+	if err != nil {
+		log.Printf("刷新Ticket错误：%v", err)
+		c.jsAPITicket = ""
+	}
+	reply := new(jsapiTicketReply)
+	json.Unmarshal(result, reply)
+
+	c.rwMutex.Lock()
+	defer c.rwMutex.Unlock()
+	c.jsAPITicket = reply.Ticket
 }
