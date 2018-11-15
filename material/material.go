@@ -46,7 +46,7 @@ func (m *Material) UploadImg(filename string, srcFile io.Reader) (*UploadImgRepl
 	return reply, nil
 }
 
-// UploadFile 上传图文消息内的图片获取URL
+// UploadFile 新增其他类型永久素材
 // 通过POST表单来调用接口，表单id为media，包含需要上传的素材内容，有filename、filelength、content-type等信息。请注意：图片素材将进入公众平台官网素材管理模块中的默认分组。
 func (m *Material) UploadFile(filename, fileType string, description *wechat.VideoDescription, srcFile io.Reader) (*UploadFileReply, error) {
 	if fileType == TypeVideo && description == nil {
@@ -58,6 +58,25 @@ func (m *Material) UploadFile(filename, fileType string, description *wechat.Vid
 		return nil, err
 	}
 	reply := new(UploadFileReply)
+	json.Unmarshal(result, reply)
+	return reply, nil
+}
+
+// UploadTempFile 新增临时素材
+// 注意点：
+// 1、临时素材media_id是可复用的。
+// 2、媒体文件在微信后台保存时间为3天，即3天后media_id失效。
+// 3、上传临时素材的格式、大小限制与公众平台官网一致。
+// 图片（image）: 2M，支持PNG\JPEG\JPG\GIF格式
+// 语音（voice）：2M，播放长度不超过60s，支持AMR\MP3格式
+// 视频（video）：10MB，支持MP4格式
+// 缩略图（thumb）：64KB，支持JPG格式
+func (m *Material) UploadTempFile(filename, fileType string, srcFile io.Reader) (*UploadTempFileReply, error) {
+	result, err := wechat.Upload("https://api.weixin.qq.com/cgi-bin/media/upload?access_token="+m.context.GetAccessToken()+"&type="+fileType, filename, nil, srcFile)
+	if err != nil {
+		return nil, err
+	}
+	reply := new(UploadTempFileReply)
 	json.Unmarshal(result, reply)
 	return reply, nil
 }
