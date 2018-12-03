@@ -1,6 +1,8 @@
 # wechat-go
 🎉微信小程序,微信小程序Api请求基础SDK
 
+# 项目迁移至 `https://github.com/nilorg/go-wechat`
+
 # Example 🌰
 ```go
 package wechat
